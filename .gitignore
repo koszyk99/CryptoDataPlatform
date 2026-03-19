@@ -1,0 +1,121 @@
+############################
+# SYSTEM / EDITORS
+############################
+.DS_Store
+Thumbs.db
+
+# Vim
+*.swp
+*.swo
+*.swx
+*.tmp
+*.bak
+
+############################
+# PYTHON (Airflow, Spark scripts)
+############################
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+.env
+.venv
+venv/
+env/
+
+############################
+# BASH
+############################
+*.sh~
+*.bash_history
+
+############################
+# DOCKER
+############################
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+*.tar
+
+############################
+# ANSIBLE
+############################
+*.retry
+.vault_pass.txt
+inventory.local
+facts/
+
+############################
+# TERRAFORM
+############################
+*.tfstate
+*.tfstate.*
+terraform.tfstate
+terraform.tfstate.backup
+crash.log
+.terraform/
+.terraform.lock.hcl
+
+############################
+# APACHE SPARK
+############################
+spark-warehouse/
+metastore_db/
+derby.log
+*.crc
+
+############################
+# APACHE KAFKA
+############################
+logs/
+kafka-logs/
+zookeeper/
+zookeeper-data/
+zookeeper-log/
+
+############################
+# POSTGRESQL
+############################
+pgdata/
+*.sql~
+*.dump
+*.backup
+
+############################
+# APACHE AIRFLOW
+############################
+airflow.db
+airflow.cfg
+logs/
+dags/__pycache__/
+plugins/__pycache__/
+*.db
+
+############################
+# PROMETHEUS
+############################
+prometheus-data/
+prometheus.yml.bak
+
+############################
+# GRAFANA
+############################
+grafana-data/
+grafana.db
+grafana.ini.bak
+
+############################
+# GENERAL DATA / SECRETS
+############################
+.env
+*.env
+*.key
+*.pem
+*.crt
+*.secret
+secrets.yml
+secrets.yaml
+*.token
+
