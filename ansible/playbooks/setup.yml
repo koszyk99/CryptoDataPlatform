@@ -2,7 +2,8 @@
 - name: Environment configuration
   hosts: localhost
   become: true
-  gather_facts: false
+  gather_facts: true
   roles:
     - { role: base, tags: ["base"] }
-    - { role: ping_pong, tags: ["ping_pong"] }
+    - { role: ping-pong, tags: ["ping-pong"] }
+    - { role: docker, tags: ["docker"] }
