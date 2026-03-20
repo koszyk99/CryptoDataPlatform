@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# ping pong test
+    - name: Ping localhost
+      ansible.builtin.ping:
+      register: ping_result
+
+    - name: Show ping result
+      ansible.builtin.debug:
+        var: ping_result

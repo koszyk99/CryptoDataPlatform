@@ -1,26 +1,8 @@
-# test ansible connection to localhost
 ---
-- name: Test Ansible connection
+- name: Environment configuration
   hosts: localhost
   become: true
   gather_facts: false
-  
-  tasks:
-    - name: Ping localhost
-      ansible.builtin.ping:
-      register: ping_result
-
-    - name: Show ping result 
-      ansible.builtin.debug:
-        var: ping_result
-
-    # initial packages
-    - name: Install initial packages
-      ansible.builtin.apt:
-        name: "{{ required_packages }}"
-        state: present
-      vars:
-        required_packages:
-          - curl
-          - gnupg
-          - ca-certificates
+  roles:
+    - { role: base, tags: ["base"] }
+    - { role: ping_pong, tags: ["ping_pong"] }

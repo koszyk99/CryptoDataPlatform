@@ -1,0 +1,14 @@
+#SPDX-License-Identifier: MIT-0
+---
+
+    # initial packages
+    - name: Install initial packages
+      ansible.builtin.apt:
+        name: "{{ required_packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        required_packages:
+          - curl
+          - gnupg
+          - ca-certificates
