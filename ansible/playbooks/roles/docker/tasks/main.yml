@@ -19,13 +19,12 @@
       - docker-compose-plugin
     state: latest
 
-<<<<<<< HEAD
 - name: Add user to Docker's group
   ansible.builtin.user:
     name: $USER
     groups: docker
     append: yes
-=======
+
 - name: Create Docker groups
   become: yes
   ansible.builtin.group:
@@ -56,4 +55,3 @@
     name: docker
     enabled: yes
     state: started
->>>>>>> feature/ansible
