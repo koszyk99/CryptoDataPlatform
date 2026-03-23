@@ -18,3 +18,34 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     state: latest
+
+- name: Create Docker groups
+  become: yes
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+- name: Add user to Docker's group
+  ansible.builtin.user:
+    name: "{{ ansible_facts.user_id }}"
+    groups: docker
+    append: yes
+
+- name: Install pip for Python 3
+  become: yes
+  ansible.builtin.apt:
+    name: python3-pip
+    state: present
+
+- name: Install docker Python library
+  become: yes
+  ansible.builtin.pip:
+    name: docker
+    executable: /usr/bin/pip3
+    extra_args: --break-system-packages
+
+- name: Enable Docker after system startup
+  ansible.builtin.systemd_service:
+    name: docker
+    enabled: yes
+    state: started
