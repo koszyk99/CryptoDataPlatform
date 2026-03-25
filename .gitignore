@@ -57,6 +57,9 @@ terraform.tfstate.backup
 crash.log
 .terraform/
 .terraform.lock.hcl
+*.tfvars
+*.tfvars.json
+variables.tf
 
 ############################
 # APACHE SPARK
