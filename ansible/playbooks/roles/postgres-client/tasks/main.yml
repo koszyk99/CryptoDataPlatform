@@ -1,3 +1,15 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for postgres-client
+- name: Import the repository signing key
+  ansible.builtin.apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Create the repository configuration file
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://apt.postgresql.org/pub/repos/apt {{ ansible_facts['distribution_release'] }}-pgdg main"
+    state: present
+
+- name: Install Postgres client packages
+  ansible.builtin.apt:
+    name: postgresql-client-15
+    state: present

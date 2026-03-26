@@ -8,3 +8,4 @@
     - { role: ping-pong, tags: ["ping-pong"] }
     - { role: docker, tags: ["docker"] }
     - { role: terraform, tags: ["terraform"] }
+    - { role: postgres-client, tags: ["postgres-client"] }
