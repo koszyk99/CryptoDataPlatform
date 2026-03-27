@@ -61,6 +61,8 @@ resource "docker_container" "postgres_db" {
         external = 5432
     }
 
+    restart = "always"
+
     # Disk mounting
     # Connect the virtual disk to a specific folder within the container
     # where Postgres stores database file by default
