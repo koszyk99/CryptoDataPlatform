@@ -1,0 +1,10 @@
+---
+- name: Install basic Python envinroment and Postgres dependencies
+  ansible.builtin.apt:
+    name:
+      - python3-pip
+      - python3-venv
+      - libpq-dev
+      - python3-dev
+    state: present
+    update_cache: yes
