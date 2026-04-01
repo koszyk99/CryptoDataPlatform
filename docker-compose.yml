@@ -1,0 +1,44 @@
+# Installing Kafka KRaft
+services:
+  broker:                       # Name of the service inside Docker Compose
+    image: apache/kafka:latest  # Official Apache Kafka image
+    container_name: kafka       # Name of the container 
+    
+    ports:
+      - "9092:9092"             # Port for Kafka clients (producers/consumers)
+      - "9093:9093"             # Port for the KRaft controller (internal)
+    
+    environment:
+
+      # Unique ID of this Kafka node in the KRaft cluster
+      KAFKA_NODE_ID: "1"
+
+      # This node acts as both broker and controller (single-node setup)
+      KAFKA_PROCESS_ROLES: broker,controller
+
+      # Listeners inside the container
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092, CONTROLLER://0.0.0.0:9093
+      
+      # Python will connect to localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+
+      # Which listener is used by the KRaft controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # Mapping of listener names to security protocols
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT, PLAINTEXT:PLAINTEXT
+
+      # KRaft quorum configuration (1 node cluster)
+      # "broker" is the internal DNS name of this service
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@broker:9093"
+
+      # Replication settings for single-node mode
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+
+      # Faster consumer group rebalancing
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+
+      # Default number of partitions for new topics
+      KAFKA_NUM_PARTITIONS: "3"
