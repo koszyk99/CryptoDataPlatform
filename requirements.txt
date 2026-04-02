@@ -4,5 +4,5 @@ idna==3.11
 psycopg2-binary==2.9.11
 requests==2.33.0
 urllib3==2.6.3
-dotenv
-os
+python-dotenv
+confluent-kafka

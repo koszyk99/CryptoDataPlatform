@@ -1,6 +1,7 @@
 # Installing Kafka KRaft
 services:
   broker:                       # Name of the service inside Docker Compose
+  restart: unless-stopped       # Run Kafka automatically after reboot
     image: apache/kafka:latest  # Official Apache Kafka image
     container_name: kafka       # Name of the container 
     
