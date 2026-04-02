@@ -1,8 +1,9 @@
 import requests
 import json
-import psycopg2
-from dotenv import load_dotenv
 import os
+from datetime import datetime
+from dotenv import load_dotenv
+from confluent_kafka import Producer
 
 # Choose which coin we want to track
 coins = ['bitcoin', 'ethereum', 'solana', 'cardano']
@@ -11,10 +12,6 @@ ids_param = ",".join(coins)
 # Data download
 response = requests.get(f'https://api.coingecko.com/api/v3/simple/price?ids={ids_param}&vs_currencies=usd')
 print(response.url)
-print(response.status_code)
-
-# Convert a raw response from the internet into a Python dictionary
-data = response.json()
 
 # Read .env file
 load_dotenv()
@@ -23,35 +20,41 @@ db_user = os.getenv('DB_USER')
 db_pass = os.getenv('DB_PASSWORD')
 db_name = os.getenv('POSTGRES_DB')
 
-# Connect to PostgreSQL
-try:
-    conn = psycopg2.connect(
-        dbname=db_name,
-        user=db_user,
-        host='localhost',
-        password=db_pass,
-        port='5432'
-    )
-    print(f"Connected to database: {db_name}")
+# Create Kafka Producer
+conf = {'bootstrap.servers': "localhost:9092"}
+producer = Producer(conf)
 
-    # Create cursor
-    cur = conn.cursor()
+# Function that tell us if it was successful
+def message_delivery(err, msg):
+    if err is not None:
+        print(f"Sending error: {err}")
+    else:
+        print(f"Sending to {msg.topic()} [{msg.partition()}]")
 
+if response.status_code == 200:
+    data = response.json()
+
+    # Loop for data and sending to Kafka
     for coin_id, coin_info in data.items():
-        price = coin_info['usd']
         symbol = coin_id.upper()
+        price = coin_info['usd']
+        timestamp = datetime.now().isoformat()
 
-        # Execute method for sql query
-        sql_query = "INSERT INTO raw_crypto_prices (symbol, price) VALUES (%s, %s)"
-        cur.execute(sql_query, (symbol, price))
-        print(f"I'm putting in: {symbol} - {price} USD")
+        # Create data packages (dictoinary -> JSON)
+        payload = {
+            'symbol': symbol,
+            'price': price,
+            'timestamp': timestamp
+        }
 
-    # "Save"
-    conn.commit()
+        # Send to Kafka
+        producer.produce(
+            'crypto-topic',
+            json.dumps(payload).encode('utf-8'),
+            callback=message_delivery
+        )
 
-    # End work and close cursor
-    cur.close()
-    conn.close()
-
-except Exception as e:
-    print(f"Connection error: {e}")
+    # We are waiting for confirmation that all messagees have been sent
+    producer.flush()
+else:
+    print(f"API error: {response.status_code}")
