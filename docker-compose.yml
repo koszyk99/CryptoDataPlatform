@@ -1,7 +1,7 @@
 # Installing Kafka KRaft
 services:
   broker:                       # Name of the service inside Docker Compose
-  restart: unless-stopped       # Run Kafka automatically after reboot
+    restart: always             # Run Kafka automatically after reboot
     image: apache/kafka:latest  # Official Apache Kafka image
     container_name: kafka       # Name of the container 
     
@@ -12,16 +12,6 @@ services:
     # Volumes are used to permanently store data
     volumes:
       - kafka_data:/var/lib/kafka/data
-
-    # Create Kafka Topic
-    command: >
-      sh -c "
-      /opt/kafka/bin/kafka-storage.sh format -t test-cluster -c /opt/kafka/config/kraft/server.properties &&
-      /opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kraft/server.properties &
-      sleep 5 &&
-      /opt/kafka/bin/kafka-topics.sh --create --topic crypto-topic --bootstrap-server localhost:9092 --partitions 3 
-      -- replication-factor 1
-      "
 
     environment:
 
@@ -57,6 +47,9 @@ services:
 
       # Default number of partitions for new topics
       KAFKA_NUM_PARTITIONS: "3"
+
+      # Create Kafka Topic
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
 
 # Create this volumes
 volumes:
