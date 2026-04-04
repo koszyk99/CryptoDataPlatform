@@ -1,7 +1,17 @@
+# Launching the infrastructure
 docker compose up -d
 
+# Checking running containers
 dokcer ps
 
+# Launching the Kafka preview
 docker exec -it kafka /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic crypto-topic --from-beginning
 
+# Releasing a data stream (Ingestion)
 python3 scripts/fetch_prices.py
+
+What if something doesn't work? (Your checklist)
+If you see errors, follow this list:
+1. docker logs kafka – is Kafka Server started at the end?
+2. netstat -tuln | grep 9092 – is the port open?
+3. pip list | grep confluent – ​​are you in venv and do you have the library installed?
