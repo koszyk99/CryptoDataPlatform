@@ -51,6 +51,23 @@ services:
       # Create Kafka Topic
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
 
-# Create this volumes
+  spark-master:
+    image: apache/spark:3.5.1
+    container_name: spark-master
+    user: root
+    ports:
+      - "8080:8080"     # Spark Master web UI
+      - "7077:7077"     # Internal communication
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+
+  spark-worker:
+    image: apache/spark:3.5.1
+    container_name: spark-worker
+    user: root
+    depends_on:
+      - spark-master
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+
+# Kafka save its data (logs, segments, offsets) so that it does not disappear after restarting the container
 volumes:
   kafka_data:
