@@ -54,6 +54,7 @@ services:
   spark-master:
     image: apache/spark:3.5.1
     container_name: spark-master
+    restart: always
     user: root
     ports:
       - "8080:8080"     # Spark Master web UI
@@ -63,6 +64,7 @@ services:
   spark-worker:
     image: apache/spark:3.5.1
     container_name: spark-worker
+    restart: always
     user: root
     depends_on:
       - spark-master
