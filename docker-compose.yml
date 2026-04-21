@@ -7,8 +7,9 @@ services:
     
     ports:
       - "9092:9092"             # Port for Kafka clients (producers/consumers)
-      - "9093:9093"             # Port for the KRaft controller (internal)
-   
+      # - "9093:9093"             # Port for the KRaft controller (internal)
+      - "9094:9094"             # For script on host (external)
+
     # Volumes are used to permanently store data
     volumes:
       - kafka_data:/var/lib/kafka/data
@@ -22,20 +23,23 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
 
       # Listeners inside the container
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092, CONTROLLER://0.0.0.0:9093
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094,CONTROLLER://0.0.0.0:9093
       
-      # Python will connect to localhost:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      # Spark will use 'kafka:9092' and PC script will use 'localhost:9094'
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9094
 
-      # Which listener is used by the KRaft controller
+      #
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+      # Which listener is used by the KRaft
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       # Mapping of listener names to security protocols
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT, PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
 
       # KRaft quorum configuration (1 node cluster)
       # "broker" is the internal DNS name of this service
-      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@broker:9093"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
 
       # Replication settings for single-node mode
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"

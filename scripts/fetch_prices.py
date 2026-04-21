@@ -21,7 +21,7 @@ db_pass = os.getenv('DB_PASSWORD')
 db_name = os.getenv('POSTGRES_DB')
 
 # Create Kafka Producer
-conf = {'bootstrap.servers': "localhost:9092"}
+conf = {'bootstrap.servers': "localhost:9094"}
 producer = Producer(conf)
 
 # Function that tell us if it was successful
