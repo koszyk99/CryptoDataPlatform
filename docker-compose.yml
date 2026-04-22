@@ -55,6 +55,18 @@ services:
       # Create Kafka Topic
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
 
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - "8090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_METRICS_PORTS: 9093
+    depends_on:
+      - broker
+
   spark-master:
     image: apache/spark:3.5.1
     container_name: spark-master
@@ -74,6 +86,19 @@ services:
       - spark-master
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
 
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-pass}
+      POSTGRES_DB: ${POSTGRES_DB:-crypto_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
 # Kafka save its data (logs, segments, offsets) so that it does not disappear after restarting the container
 volumes:
   kafka_data:
+  postgres_data:
