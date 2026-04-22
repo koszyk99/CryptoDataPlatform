@@ -20,7 +20,7 @@ schema = StructType([
 df = spark.readStream \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "kafka:9092") \
-    .option("subscribe", "crypto-topic") \
+    .option("subscribe", "crypto_prices") \
     .option("startingOffsets", "earliest") \
     .load()
 
@@ -29,10 +29,21 @@ parsed_df = df.selectExpr("CAST(value AS STRING)") \
     .select(from_json(col("value"), schema).alias("data")) \
     .select("data.*")
 
+# Write function to Postgres
+def write_to_postgres(batch_df, batch_id):
+    batch_df.write \
+        .format("jdbc") \
+        .option("url", "jdbc:postgresql://postgres:5432/crypto_db") \
+        .option("dbtable", "crypto_prices") \
+        .option("user", "user") \
+        .option("password", "pass") \
+        .option("driver", "org.postgresql.Driver") \
+        .mode("append") \
+        .save()
+
 # Display result in console
 query = parsed_df.writeStream \
-    .outputMode("append") \
-    .format("console") \
+    .foreachBatch(write_to_postgres) \
     .start()
 
 # Wait until streaming is stopped

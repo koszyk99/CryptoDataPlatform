@@ -1,6 +1,6 @@
 # Installing Kafka KRaft
 services:
-  broker:                       # Name of the service inside Docker Compose
+  kafka:                       # Name of the service inside Docker Compose
     restart: always             # Run Kafka automatically after reboot
     image: apache/kafka:latest  # Official Apache Kafka image
     container_name: kafka       # Name of the container 
@@ -56,16 +56,15 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
 
   kafka-ui:
-    image: provectuslabs/kafka-ui:latest
+    image: provectuslabs/kafka-ui:v0.7.2
     container_name: kafka-ui
     ports:
       - "8090:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOSTRAPSERVERS: kafka:9092
-      KAFKA_CLUSTERS_0_METRICS_PORTS: 9093
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
     depends_on:
-      - broker
+      - kafka
 
   spark-master:
     image: apache/spark:3.5.1
