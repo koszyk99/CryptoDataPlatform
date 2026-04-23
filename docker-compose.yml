@@ -28,7 +28,7 @@ services:
       # Spark will use 'kafka:9092' and PC script will use 'localhost:9094'
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,EXTERNAL://localhost:9094
 
-      #
+      # name of the listener used by Kafka for inter-broker communication
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
       # Which listener is used by the KRaft
