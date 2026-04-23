@@ -79,6 +79,8 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ./scripts:/opt/spark/scripts
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
 
   spark-worker:

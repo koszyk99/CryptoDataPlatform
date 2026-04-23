@@ -14,7 +14,7 @@ python3 scripts/fetch_prices.py
 # Starting spark processor
 docker exec -it spark-master /opt/spark/bin/spark-submit \
   --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.postgresql:postgresql:42.6.0 \
-  /opt/spark/spark_processor.py
+  /opt/spark/scripts/spark_processor.py
 
 # Database preview
 docker exec -it postgres psql -U admin -d crypto_db -c "SELECT * FROM crypto_prices ORDER BY timestamp DESC LIMIT 10;"
