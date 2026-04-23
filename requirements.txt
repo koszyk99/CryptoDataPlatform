@@ -7,3 +7,5 @@ urllib3==2.6.3
 python-dotenv
 confluent-kafka
 pyspark
+dbt-core
+dbt-postgres
