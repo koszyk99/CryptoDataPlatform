@@ -1,3 +1,4 @@
+import os
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, TimestampType
 from pyspark.sql.functions import from_json, col
@@ -20,7 +21,7 @@ schema = StructType([
 df = spark.readStream \
     .format("kafka") \
     .option("kafka.bootstrap.servers", "kafka:9092") \
-    .option("subscribe", "crypto_prices") \
+    .option("subscribe", "crypto-topic") \
     .option("startingOffsets", "earliest") \
     .load()
 
@@ -31,12 +32,18 @@ parsed_df = df.selectExpr("CAST(value AS STRING)") \
 
 # Write function to Postgres
 def write_to_postgres(batch_df, batch_id):
+
+    # Retriving variables from the system (inside the container)
+    db_user = os.getenv('DB_USER')
+    db_password = os.getenv('DB_PASSWORD')
+    db_name = os.getenv('POSTGRES_DB')
+
     batch_df.write \
         .format("jdbc") \
-        .option("url", "jdbc:postgresql://postgres:5432/crypto_db") \
+        .option("url", f"jdbc:postgresql://postgres:5432/{db_name}") \
         .option("dbtable", "crypto_prices") \
-        .option("user", "user") \
-        .option("password", "pass") \
+        .option("user", db_user) \
+        .option("password", db_password) \
         .option("driver", "org.postgresql.Driver") \
         .mode("append") \
         .save()

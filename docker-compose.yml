@@ -75,6 +75,10 @@ services:
     ports:
       - "8081:8080"     # Spark Master web UI
       - "7077:7077"     # Internal communication
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
 
   spark-worker:

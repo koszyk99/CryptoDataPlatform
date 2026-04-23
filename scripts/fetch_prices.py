@@ -65,7 +65,7 @@ try:
         else:
             print(f"API error: {response.status_code}")
 
-        time.sleep(10)
+        time.sleep(30)
 
 except KeyboardInterrupt:
     print("\nStopping price fetcher. Goodbye!")
