@@ -31,8 +31,7 @@ parsed_df = df.selectExpr("CAST(value AS STRING)") \
 
 # Display result in console
 query = parsed_df.writeStream \
-    .outputMode("append") \
-    .format("console") \
+    .foreachBatch(write_to_postgres) \
     .start()
 
 # Wait until streaming is stopped
