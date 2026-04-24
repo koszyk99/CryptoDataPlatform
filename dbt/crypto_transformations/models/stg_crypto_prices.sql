@@ -2,7 +2,7 @@
 
 SELECT 
     symbol,
-    AVG(price) AS avg_price,
+    ROUND(CAST(AVG(price) AS numeric), 2) AS avg_price,
     date_trunc('minutes', timestamp) AS minute_bucket
 FROM {{ source('raw', 'crypto_prices') }}
 GROUP BY symbol, minute_bucket
