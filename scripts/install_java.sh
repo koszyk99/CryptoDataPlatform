@@ -12,7 +12,7 @@ sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/java
 JAVA_VERSION=$(java --version 2>&1 | head -n 1)
 
 # Verify installation
-echo "==============================="
+echo "======================================"
 echo "   Java instllation complete   "
 echo "   Your Java version: $JAVA_VERSION"
-echo "==============================="
+echo "======================================"

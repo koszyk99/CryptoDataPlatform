@@ -1,6 +1,6 @@
 # Installing Kafka KRaft
 services:
-  kafka:                       # Name of the service inside Docker Compose
+  kafka:                        # Name of the service inside Docker Compose
     restart: always             # Run Kafka automatically after reboot
     image: apache/kafka:latest  # Official Apache Kafka image
     container_name: kafka       # Name of the container 
@@ -115,6 +115,38 @@ services:
     depends_on:
       - postgres
     restart: always
+
+  price-producer:
+      build: .
+      container_name: price-producer
+      restart: always
+      environment:
+        - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      volumes:
+        - .:/app
+      command: python scripts/fetch_prices.py
+      depends_on:
+        - kafka
+
+  spark-processor-job:
+    build: .
+    container_name: spark-processor-job
+    restart: always
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    volumes:
+      - .:/app
+    command: >
+      spark-submit 
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.postgresql:postgresql:42.6.0 
+      scripts/spark_processor.py
+    depends_on:
+      - kafka
+      - postgres
 
 # Kafka save its data (logs, segments, offsets) so that it does not disappear after restarting the container
 volumes:
