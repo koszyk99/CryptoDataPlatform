@@ -2,16 +2,16 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy the installation script and give it permissions
-COPY scripts/install_java.sh ./scripts/
-RUN chmod +x ./scripts/install_java.sh
-
-# Run script inside the image
-RUN ./scripts/install_java.sh
+# Installing Java and procps (for Spark)
+RUN apt-get update && \
+    apt-get install -y default-jre procps && \
+    apt-get clean
 
 # Setting environment variables for Java
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV PATH=$PATH:$JAVA_HOME/bin
+# Prevents Python logs from being cached
+ENV PYTHONUNBUFFERED=1
 
 # Copy rest of the files
 COPY requirements.txt .

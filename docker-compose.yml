@@ -122,6 +122,7 @@ services:
       restart: always
       environment:
         - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+        - PYTHONUNBUFFERED=1
       volumes:
         - .:/app
       command: python scripts/fetch_prices.py
@@ -141,8 +142,9 @@ services:
     volumes:
       - .:/app
     command: >
-      spark-submit 
-      --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.postgresql:postgresql:42.6.0 
+      spark-submit
+      --master local[*]
+      --packages org.apache.spark:spark-sql-kafka-0-10_2.13:3.5.1,org.postgresql:postgresql:42.6.0
       scripts/spark_processor.py
     depends_on:
       - kafka

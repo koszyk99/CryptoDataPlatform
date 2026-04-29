@@ -6,7 +6,6 @@ from pyspark.sql.functions import from_json, col
 # Downloads a library that allows Spark to read and write to Apache Kafka
 spark = SparkSession.builder \
     .appName("CryptoStreamProcessor") \
-    .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1") \
     .getOrCreate()
 
 # Defining schema structure
@@ -28,7 +27,8 @@ df = spark.readStream \
 # Parsing column 'value' from bytes to string
 parsed_df = df.selectExpr("CAST(value AS STRING)") \
     .select(from_json(col("value"), schema).alias("data")) \
-    .select("data.*")
+    .select("data.*") \
+    .withColumn("timestamp", to_timestamp(replace(col("timestamp"), "T", " "), "yyyy-MM-dd HH:mm:ss"))
 
 # Write function to Postgres
 def write_to_postgres(batch_df, batch_id):
@@ -37,6 +37,7 @@ def write_to_postgres(batch_df, batch_id):
     db_user = os.getenv('DB_USER')
     db_password = os.getenv('DB_PASSWORD')
     db_name = os.getenv('POSTGRES_DB')
+    db_host = os.getenv('DB_HOST')
 
     batch_df.write \
         .format("jdbc") \
@@ -48,10 +49,17 @@ def write_to_postgres(batch_df, batch_id):
         .mode("append") \
         .save()
 
-# Display result in console
-query = parsed_df.writeStream \
+# Save to console
+console_query = parsed_df.writeStream \
+    .outputMode("append") \
+    .format("console") \
+    .option("truncate", "false") \
+    .start()
+
+# Save to Postgres
+postgres_query = parsed_df.writeStream \
     .foreachBatch(write_to_postgres) \
     .start()
 
 # Wait until streaming is stopped
-query.awaitTermination()
+spark.streams.awaitAnyTermination()
