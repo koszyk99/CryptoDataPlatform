@@ -1,11 +1,23 @@
+# HTTP & utils
+requests==2.33.0
+urllib3==2.6.3
 certifi==2026.2.25
 charset-normalizer==3.4.6
 idna==3.11
-psycopg2-binary==2.9.11
-requests==2.33.0
-urllib3==2.6.3
-python-dotenv
+
+# Kafka producer (used in fetch_prices.py)
 confluent-kafka
-pyspark
+
+# PostgreSQL (used if running scripts locally outside Docker)
+psycopg2-binary==2.9.11
+
+# Environment variables
+python-dotenv
+
+# FIX: Removed pyspark — it's ~300MB and unused in this image (price-producer only)
+# Spark runs in its own dedicated container (apache/spark:3.5.1)
+# If you need to run spark_processor.py locally, install pyspark separately
+
+# dbt (optional — only needed if you use dbt transformations)
 dbt-core
 dbt-postgres

@@ -1,7 +1,7 @@
 import os
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, DoubleType, TimestampType
-from pyspark.sql.functions import from_json, col
+from pyspark.sql.functions import from_json, col, to_timestamp, regexp_replace
 
 # Downloads a library that allows Spark to read and write to Apache Kafka
 spark = SparkSession.builder \
@@ -12,7 +12,7 @@ spark = SparkSession.builder \
 schema = StructType([
     StructField('symbol', StringType(), True),
     StructField('price', DoubleType(), True),
-    StructField('timestamp', TimestampType(), True)
+    StructField('timestamp', StringType(), True)
 ])
 
 # Reading data from Kafka
@@ -28,7 +28,10 @@ df = spark.readStream \
 parsed_df = df.selectExpr("CAST(value AS STRING)") \
     .select(from_json(col("value"), schema).alias("data")) \
     .select("data.*") \
-    .withColumn("timestamp", to_timestamp(replace(col("timestamp"), "T", " "), "yyyy-MM-dd HH:mm:ss"))
+    .withColumn(
+        "timestamp",
+        to_timestamp(regexp_replace(col("timestamp"), "T", " "), "yyyy-MM-dd HH:mm:ss.SSSSSS")
+    )
 
 # Write function to Postgres
 def write_to_postgres(batch_df, batch_id):
@@ -37,11 +40,12 @@ def write_to_postgres(batch_df, batch_id):
     db_user = os.getenv('DB_USER')
     db_password = os.getenv('DB_PASSWORD')
     db_name = os.getenv('POSTGRES_DB')
-    db_host = os.getenv('DB_HOST')
+    db_host = os.getenv('DB_HOST', 'postgres')
+    db_port = os.getenv('DB_PORT', '5432')
 
     batch_df.write \
         .format("jdbc") \
-        .option("url", f"jdbc:postgresql://postgres:5432/{db_name}") \
+        .option("url", f"jdbc:postgresql://{db_host}:{db_port}/{db_name}") \
         .option("dbtable", "crypto_prices") \
         .option("user", db_user) \
         .option("password", db_password) \
