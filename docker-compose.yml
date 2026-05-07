@@ -134,9 +134,10 @@ services:
         - kafka
 
   spark-processor-job:
-    build: .
+    image: apache/spark:3.5.1
     container_name: spark-processor-job
     restart: always
+    user: root
     environment:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
@@ -145,12 +146,12 @@ services:
       - DB_PORT=${DB_PORT}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     volumes:
-      - .:/app
+      - ./scripts:/opt/spark/scripts
     command: >
-      spark-submit
+      /opt/spark/bin/spark-submit
       --master local[*]
       --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.postgresql:postgresql:42.6.0
-      scripts/spark_processor.py
+      /opt/spark/scripts/spark_processor.py
     depends_on:
       postgres:
         condition: service_healthy
