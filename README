@@ -13,7 +13,7 @@ The system consists of the following components:
 
 [Image of data engineering pipeline architecture with Kafka Spark and Grafana]
 
-## 🛠 Technology Stack
+## Technology Stack
 
 * **Language:** Python 3.12
 * **Data Processing:** Apache Spark 3.5.1 / 4.1.1
