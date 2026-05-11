@@ -38,6 +38,7 @@ cd CryptoDataPlatform
 Make sure the `.env` file contains the correct database credentials and API keys.
 
 3. **Start the infrastructure:**
+
 ```bash
 docker compose up --build
 ```
