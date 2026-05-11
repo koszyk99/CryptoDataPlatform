@@ -1,84 +1,115 @@
-CryptoDataPlatform
+ # CryptoDataPlatform
+
 
 A comprehensive system for real-time streaming and analysis of cryptocurrency data. The project utilizes the modern Data Lakehouse architecture, integrating data retrieval via APIs, messaging via Kafka, stream processing in Spark, and visualization in Grafana.
 
-System Architecture
+
+## System Architecture
+
 
 The system consists of the following components:
 
-Price Producer (Python): Retrieves cryptocurrency price data from external APIs and sends it to a topic in Kafka.
 
-Apache Kafka: A message broker serving as a buffer for incoming data.
+1. **Price Producer (Python):** Retrieves cryptocurrency price data from external APIs and sends it to a topic in Kafka.
 
-Apache Spark (PySpark): A distributed processing engine that consumes data from Kafka, performs transformations (e.g., temporal aggregations), and stores the results in a database.
+2. **Apache Kafka:** A message broker serving as a buffer for incoming data.
 
-PostgreSQL: A relational database storing processed historical and current data.
+3. **Apache Spark (PySpark):** A distributed processing engine that consumes data from Kafka, performs transformations (e.g., temporal aggregations), and stores the results in a database. 4. **PostgreSQL:** A relational database storing processed historical and current data.
 
-Grafana: An analytics and visualization tool that allows you to create interactive dashboards.
+5. **Grafana:** An analytics and visualization tool that allows you to create interactive dashboards.
 
-Technology Stack
 
-Language: Python 3.12
+[Image of data engineering pipeline architecture with Kafka Spark and Grafana]
 
-Data Processing: Apache Spark 3.5.1
 
-Streaming: Apache Kafka & KRaft
+## Technology Stack
 
-Database: PostgreSQL 15
 
-Visualization: Grafana
+* **Language:** Python 3.12
 
-Containerization: Docker & Docker Compose
+* **Data Processing:** Apache Spark 3.5.1 / 4.1.1
 
-Project Launch
+* **Streaming:** Apache Kafka & KRaft
 
-Requirements
+* **Database:** PostgreSQL 15
 
-Docker and Docker Compose installed.
+* **Visualization:** Grafana
 
-Steps
+* **Containerization:** Docker & Docker Compose
 
-Clone the repository:
+
+## Project Launch
+
+
+### Requirements
+
+* Docker and Docker Compose installed.
+
+
+### Steps
+
+1. **Clone the repository:**
+
+```bash
 
 git clone <link-to-your-repo>
+
 cd CryptoDataPlatform
 
+```
 
-Configure environment variables:
-Make sure the .env file contains the correct database credentials and API keys.
 
-Start the infrastructure:
+2. **Configure environment variables:**
+
+Make sure the `.env` file contains the correct database credentials and API keys.
+
+
+3. **Start the infrastructure:**
+
+```bash
 
 docker compose up --build
 
+```
 
-Access to services:
 
-Grafana: http://localhost:3000 (Login: admin, Password: admin)
+4. **Access to services:**
 
-Kafka UI: http://localhost:8080
+* **Grafana:** [http://localhost:3000](http://localhost:3000) (Login: `admin`, Password: `admin` or reset)
 
-Spark Master: http://localhost:8081
+* **Kafka UI:** [http://localhost:8080](http://localhost:8080) (For viewing messages in Kafka)
 
-Configuring Grafana
+* **Spark Master:** [http://localhost:8081](http://localhost:8081)
+
+
+## Configuring Grafana
+
 
 To view graphs:
 
-Log in to Grafana.
+1. Log in to Grafana.
 
-Add a new data source (PostgreSQL).
+2. Add a new data source (**PostgreSQL**).
 
-Enter postgres:5432 as the host.
+3. Enter `postgres:5432` as the host.
 
-Create a new Dashboard and use an SQL query, e.g.:
+4. Create a new Dashboard and use an SQL query, e.g.:
+
+```sql
 
 SELECT timestamp AS "time", price, symbol FROM crypto_prices WHERE $__timeFilter(timestamp);
 
+```
 
-Troubleshooting
 
-Spark-submit error: If the spark-processor-job container reports a missing executable, ensure that the path in docker-compose.yml points to /opt/bitnami/spark/bin/spark-submit.
+## Troubleshooting
 
-Missing data in Grafana: Check the producer logs (docker logs price-producer) and Spark logs (docker logs spark-processor-job) to ensure that data is flowing through the system.
 
-This project was created for educational purposes – real-time data streaming analysis.
+* **Spark-submit error:** If the `spark-processor-job` container reports a missing executable, ensure that the path in `docker-compose.yml` points to `/opt/bitnami/spark/bin/spark-submit`.
+
+* **Missing data in Grafana:** Check the producer logs (`docker logs price-producer`) and Spark logs (`docker logs spark-processor-job`) to ensure that data is flowing through the system.
+
+
+---
+
+This project was created for educational purposes – real-time data streaming analysis. 
