@@ -52,7 +52,7 @@ The system consists of the following components:
 
 ```bash
 
-git clone <link-to-your-repo>
+git clone git@github.com:koszyk99/CryptoDataPlatform.git
 
 cd CryptoDataPlatform
 
@@ -61,7 +61,7 @@ cd CryptoDataPlatform
 
 2. **Configure environment variables:**
 
-Make sure the `.env` file contains the correct database credentials and API keys.
+Make sure the `.env` file contains the correct database credentials.
 
 
 3. **Start the infrastructure:**
