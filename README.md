@@ -31,11 +31,11 @@ The system consists of the following components:
 
 * **Streaming:** Apache Kafka & KRaft
 
-* **Database:** PostgreSQL 15
+* **Database:** PostgreSQL 15 with dbt
 
 * **Visualization:** Grafana
 
-* **Containerization:** Docker & Docker Compose
+* **DevOps:** Docker, Docker Compose, Terraform, Ansible
 
 
 ## Project Launch
