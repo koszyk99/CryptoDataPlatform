@@ -111,5 +111,3 @@ SELECT timestamp AS "time", price, symbol FROM crypto_prices WHERE $__timeFilter
 
 
 ---
-
-This project was created for educational purposes – real-time data streaming analysis. 
